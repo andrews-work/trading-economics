@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data for <%= country %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+  <!-- Header -->
+  <%- include('../components/header') %>
+
+  <!-- Main Content -->
+  <main class="py-16 min-h-[86vh]">
+
+    <!-- Basic Stats - Centered -->
+    <div class="max-w-7xl mx-auto px-6 text-center mb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        
+        <!-- GDP -->
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h2 class="text-xl font-semibold text-blue-900 mb-4">GDP</h2>
+          <p class="text-2xl text-gray-700">
+            <% 
+              const countryGDP = gdpData.find(item => item.country.toLowerCase() === country.toLowerCase());
+            %>
+            <%= countryGDP ? countryGDP.latestValue : 'API error' %> USD Billion
+          </p>
+        </div>
+
+        <!-- Inflation -->
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h2 class="text-xl font-semibold text-blue-900 mb-4">Inflation</h2>
+          <p class="text-2xl text-gray-700">
+            <% 
+              const countryInflation = calendarData.find(item => item.eventType === 'Inflation'); 
+            %>
+            <% if (countryInflation) { %>
+              <%= countryInflation.description %>
+            <% } else { %>
+              API error probably
+            <% } %>
+          </p>
+        </div>
+
+        <!-- Population -->
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h2 class="text-xl font-semibold text-blue-900 mb-4">Population</h2>
+          <p class="text-2xl text-gray-700">Data not available</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Title - Centered -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900">
+        Economic Data for <%= country %>
+      </h1>
+    </div>
+
+    <!-- Four Cards Section -->
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <!-- Economic Calendar Card -->
+      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold text-blue-900 mb-4">Economic Calendar</h3>
+        <ul class="space-y-4">
+          <% if (calendarData.length === 0) { %>
+            <li class="text-lg text-gray-500">API error.</li>
+          <% } else { %>
+            <% calendarData.forEach(event => { %>
+              <li class="text-lg text-gray-500">
+                <strong><%= event.Event %></strong><br>
+                <span class="text-gray-500">Date: <%= new Date(event.Date).toLocaleDateString() %></span><br>
+                <span class="text-gray-500">Previous: <%= event.Previous %></span><br>
+                <span class="text-gray-500">
+                  Source: <a href="<%= event.SourceURL %>" target="_blank" class="text-blue-500"><%= event.Source %></a>
+                </span>
+              </li>
+            <% }) %>
+          <% } %>
+        </ul>
+      </div>
+
+      <!-- Markets Card -->
+      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold text-blue-900 mb-4">Markets</h3>
+        <ul class="space-y-4">
+          <% if (marketData && marketData.length === 0) { %>
+            <li class="text-sm text-gray-500">No market data available - API error probably.</li>
+          <% } else { %>
+            <% marketData.forEach(data => { %>
+              <li class="text-sm text-gray-500">
+                <strong><%= data.Symbol %></strong><br>
+                <span class="text-gray-700">Current Price: <%= data.Last %> <%= data.Unit %></span><br>
+                <span class="text-gray-500">Daily Change: <%= data.DailyPercentualChange %>%</span><br>
+                <span class="text-gray-500">Monthly Change: <%= data.MonthlyPercentualChange %>%</span><br>
+                <span class="text-gray-500">YTD Change: <%= data.YTDPercentualChange %>%</span><br>
+              </li>
+            <% }) %>
+          <% } %>
+        </ul>
+      </div>
+
+      <!-- Indicators Card -->
+      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold text-blue-900 mb-4">Indicators</h3>
+        <ul class="space-y-4">
+          <li class="text-lg text-gray-500">No indicators available.</li>
+          <li class="text-lg text-gray-500">No indicators available.</li>
+          <li class="text-lg text-gray-500">No indicators available.</li>
+        </ul>
+      </div>
+
+      <!-- Forecasts Card -->
+      <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <h3 class="text-2xl font-semibold text-blue-900 mb-4">Forecasts</h3>
+        <div id="forecast-data">
+          <ul class="space-y-4">
+            <% if (forecastData && forecastData.Symbol) { %>
+              <li class="text-lg text-gray-500">Symbol: <%= forecastData.Symbol %></li>
+              <li class="text-lg text-gray-500">Type: <%= forecastData.Type %></li>
+              <li class="text-lg text-gray-500">Last: <%= forecastData.Last %></li>
+
+              <% if (forecastData.Forecast2 && forecastData.ForecastDate2) { %>
+                <li class="text-lg text-gray-500">
+                  Forecast 2: <%= forecastData.Forecast2 %> (Date: <%= forecastData.ForecastDate2 %>)
+                </li>
+              <% } %>
+
+              <% if (forecastData.Forecast3 && forecastData.ForecastDate3) { %>
+                <li class="text-lg text-gray-500">
+                  Forecast 3: <%= forecastData.Forecast3 %> (Date: <%= forecastData.ForecastDate3 %>)
+                </li>
+              <% } %>
+
+              <% if (forecastData.Forecast4 && forecastData.ForecastDate4) { %>
+                <li class="text-lg text-gray-500">
+                  Forecast 4: <%= forecastData.Forecast4 %> (Date: <%= forecastData.ForecastDate4 %>)
+                </li>
+              <% } %>
+            <% } else { %>
+              <li class="text-lg text-gray-500">No forecast data available - API error.</li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <%- include('../components/footer') %>
+
+</body>
+
+</html>

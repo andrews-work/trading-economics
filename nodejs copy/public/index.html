@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Economics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <header>
+        <nav class="bg-blue-900 p-4">
+            <ul class="flex justify-center space-x-6">
+                <!-- Home link -->
+                <li><a href="/" class="text-white hover:text-blue-200">Home</a></li>
+                
+                <!-- Country Links -->
+                <li><a href="/mexico" class="text-white hover:text-blue-200">Mexico</a></li>
+                <li><a href="/thailand" class="text-white hover:text-blue-200">Thailand</a></li>
+                <li><a href="/new-zealand" class="text-white hover:text-blue-200">New Zealand</a></li>
+                <li><a href="/sweden" class="text-white hover:text-blue-200">Sweden</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex items-center justify-center min-h-[85vh] py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-4xl font-semibold text-center text-blue-900 mb-8">Welcome to Trading Economics</h1>
+            
+            <p class="text-xl text-center mb-12">Click on any country below to view the latest economic data.</p>
+
+            <!-- Country Sections -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Mexico Section -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <h2 class="text-2xl font-semibold text-center text-blue-900">Mexico</h2>
+                    <p class="mt-4 text-center text-gray-700">Get the latest economic events for Mexico, including interest rate decisions, GDP data, and more.</p>
+                    <div class="text-center mt-6">
+                        <a href="/mexico" class="bg-blue-900 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">View Mexico Data</a>
+                    </div>
+                </div>
+
+                <!-- Thailand Section -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <h2 class="text-2xl font-semibold text-center text-blue-900">Thailand</h2>
+                    <p class="mt-4 text-center text-gray-700">Get the latest economic events for Thailand, including interest rate decisions, GDP data, and more.</p>
+                    <div class="text-center mt-6">
+                        <a href="/thailand" class="bg-blue-900 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">View Thailand Data</a>
+                    </div>
+                </div>
+
+                <!-- New Zealand Section -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <h2 class="text-2xl font-semibold text-center text-blue-900">New Zealand</h2>
+                    <p class="mt-4 text-center text-gray-700">Get the latest economic events for New Zealand, including interest rate decisions, GDP data, and more.</p>
+                    <div class="text-center mt-6">
+                        <a href="/new-zealand" class="bg-blue-900 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">View New Zealand Data</a>
+                    </div>
+                </div>
+
+                <!-- Sweden Section -->
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <h2 class="text-2xl font-semibold text-center text-blue-900">Sweden</h2>
+                    <p class="mt-4 text-center text-gray-700">Get the latest economic events for Sweden, including interest rate decisions, GDP data, and more.</p>
+                    <div class="text-center mt-6">
+                        <a href="/sweden" class="bg-blue-900 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition duration-300">View Sweden Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white text-center py-4 mt-8">
+        <p>&copy; 2024 Trading Economics. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

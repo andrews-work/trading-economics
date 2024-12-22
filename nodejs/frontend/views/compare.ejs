@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Countries</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../public/js/compare.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+  <!-- Include the Header -->
+  <%- include('../components/header') %>
+
+  <!-- Main Content -->
+  <main class="py-16 min-h-[86vh]">
+
+    <!-- Title -->
+    <div class="max-w-7xl mx-auto px-6 text-center mb-12">
+      <h1 class="text-4xl font-extrabold text-blue-900">Compare Countries</h1>
+    </div>
+  
+    <!-- Country Dropdowns for Comparison -->
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
+      
+      <!-- Country 1 Dropdown -->
+      <div class="flex justify-center items-center">
+        <label for="country1" class="text-xl font-semibold text-gray-700 mr-4">Select Country 1:</label>
+        <select id="country1" class="bg-white border border-gray-300 rounded-lg p-3 text-lg" onchange="updateUrl()">
+          <option value="">-- Select --</option>
+          <% countries.forEach(function(country) { %>
+            <option value="<%= country %>" <%= country1 === country ? 'selected' : '' %>><%= country %></option>
+          <% }); %>
+        </select>
+      </div>
+  
+      <!-- Country 2 Dropdown -->
+      <div class="flex justify-center items-center">
+        <label for="country2" class="text-xl font-semibold text-gray-700 mr-4">Select Country 2:</label>
+        <select id="country2" class="bg-white border border-gray-300 rounded-lg p-3 text-lg" onchange="updateUrl()">
+          <option value="">-- Select --</option>
+          <% countries.forEach(function(country) { %>
+            <option value="<%= country %>" <%= country2 === country ? 'selected' : '' %>><%= country %></option>
+          <% }); %>
+        </select>
+      </div>
+    </div>
+  
+    <!-- Placeholder: Content is hidden until both countries are selected -->
+    <div id="content" class="<%= country1 && country2 ? '' : 'hidden' %>">
+  
+      <!-- Comparison Table for Basic Data (GDP, Inflation, Unemployment) -->
+      <div class="max-w-7xl mx-auto px-6 mb-8">
+        <table class="min-w-full bg-white rounded-lg shadow-lg">
+          <thead>
+            <tr>
+              <th class="py-3 px-4 text-lg text-left text-gray-700">Indicator</th>
+              <th class="py-3 px-4 text-lg text-center text-gray-700"><%= country1 %></th>
+              <th class="py-3 px-4 text-lg text-center text-gray-700"><%= country2 %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="py-2 px-4 text-lg text-gray-600">GDP</td>
+              <td id="country1-gdp" class="py-2 px-4 text-lg text-center text-gray-700"></td>
+              <td id="country2-gdp" class="py-2 px-4 text-lg text-center text-gray-700"></td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 text-lg text-gray-600">Inflation</td>
+              <td id="country1-inflation" class="py-2 px-4 text-lg text-center text-gray-700"></td>
+              <td id="country2-inflation" class="py-2 px-4 text-lg text-center text-gray-700"></td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 text-lg text-gray-600">Unemployment</td>
+              <td id="country1-unemployment" class="py-2 px-4 text-lg text-center text-gray-700"></td>
+              <td id="country2-unemployment" class="py-2 px-4 text-lg text-center text-gray-700"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Tab Menu for Data Comparison -->
+      <div class="max-w-7xl mx-auto px-6 mb-8">
+        <div class="tabs flex justify-center space-x-8">
+          <button id="economic-calendar-tab" class="tab-button text-xl font-semibold text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition duration-200" onclick="switchTab(event, 'calendar')">
+            Economic Calendar
+          </button>
+          <button id="market-tab" class="tab-button text-xl font-semibold text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition duration-200" onclick="switchTab(event, 'market')">
+            Market
+          </button>
+          <button id="forecast-tab" class="tab-button text-xl font-semibold text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition duration-200" onclick="switchTab(event, 'forecast')">
+            Forecast
+          </button>
+          <button id="financials-tab" class="tab-button text-xl font-semibold text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition duration-200" onclick="switchTab(event, 'financials')">
+            Financials
+          </button>
+        </div>
+      </div>
+  
+      <!-- Tab Content -->
+      <div id="tab-content" class="max-w-4xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
+        
+        <!-- Left Card for Country 1 -->
+        <div id="country1-card" class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-2xl font-semibold text-blue-900 mb-4">
+            <%= country1 ? country1 + ' Data' : 'Country 1 Data' %>
+          </h3>
+          <div id="country1-content"></div>
+        </div>
+  
+        <!-- Right Card for Country 2 -->
+        <div id="country2-card" class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-2xl font-semibold text-blue-900 mb-4">
+            <%= country2 ? country2 + ' Data' : 'Country 2 Data' %>
+          </h3>
+          <div id="country2-content"></div>
+        </div>
+  
+      </div>
+  
+      <!-- Each Tab's Content -->
+      <div id="calendar-content" class="hidden">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8">
+  
+          <!-- Left Card for Country 1 (Economic Calendar) -->
+          <div id="country1-calendar" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-blue-900 mb-4">Economic Calendar for <%= country1 %></h3>
+            <ul class="space-y-4">
+              <% if (!calendarData[country1] || calendarData[country1].length === 0) { %>
+                <li class="text-lg text-gray-500">No events available.</li>
+              <% } else { %>
+                <% calendarData[country1].forEach(event => { %>
+                  <li class="text-lg text-gray-500">
+                    <strong><%= event.Event %></strong><br>
+                    <span class="text-gray-500">Date: <%= new Date(event.Date).toLocaleDateString() %></span><br>
+                    <span class="text-gray-500">Previous: <%= event.Previous %></span><br>
+                    <span class="text-gray-500">
+                      Source: <a href="<%= event.SourceURL %>" target="_blank" class="text-blue-500"><%= event.Source %></a>
+                    </span>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+  
+          <!-- Right Card for Country 2 (Economic Calendar) -->
+          <div id="country2-calendar" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-blue-900 mb-4">Economic Calendar for <%= country2 %></h3>
+            <ul class="space-y-4">
+              <% if (!calendarData[country2] || calendarData[country2].length === 0) { %>
+                <li class="text-lg text-gray-500">No events available.</li>
+              <% } else { %>
+                <% calendarData[country2].forEach(event => { %>
+                  <li class="text-lg text-gray-500">
+                    <strong><%= event.Event %></strong><br>
+                    <span class="text-gray-500">Date: <%= new Date(event.Date).toLocaleDateString() %></span><br>
+                    <span class="text-gray-500">Previous: <%= event.Previous %></span><br>
+                    <span class="text-gray-500">
+                      Source: <a href="<%= event.SourceURL %>" target="_blank" class="text-blue-500"><%= event.Source %></a>
+                    </span>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+  
+        </div>
+      </div>
+  
+      <!-- Market Content -->
+      <div id="market-content" class="hidden">
+        <div class="max-w-6xl mx-auto  grid grid-cols-1 sm:grid-cols-2 gap-8">
+  
+          <!-- Left Card for Country 1 (Market Data) -->
+          <div id="country1-market" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-blue-900 mb-4">Market Data for <%= country1 %></h3>
+            <ul class="space-y-4">
+              <% if (!marketData[country1] || marketData[country1].length === 0) { %>
+                <li class="text-sm text-gray-500">No market data available - API error probably.</li>
+              <% } else { %>
+                <% marketData[country1].forEach(data => { %> 
+                  <li class="text-sm text-gray-500">
+                    <strong><%= data.Symbol %></strong><br>
+                    <span class="text-gray-700">Current Price: <%= data.Last %> <%= data.Unit %></span><br>
+                    <span class="text-gray-500">Daily Change: <%= data.DailyPercentualChange %>%</span><br>
+                    <span class="text-gray-500">Monthly Change: <%= data.MonthlyPercentualChange %>%</span><br>
+                    <span class="text-gray-500">YTD Change: <%= data.YTDPercentualChange %>%</span><br>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+  
+          <!-- Right Card for Country 2 (Market Data) -->
+          <div id="country2-market" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-blue-900 mb-4">Market Data for <%= country2 %></h3>
+            <ul class="space-y-4">
+              <% if (!marketData[country2] || marketData[country2].length === 0) { %>
+                <li class="text-sm text-gray-500">No market data available - API error probably.</li>
+              <% } else { %>
+                <% marketData[country2].forEach(data => { %>
+                  <li class="text-sm text-gray-500">
+                    <strong><%= data.Symbol %></strong><br>
+                    <span class="text-gray-700">Current Price: <%= data.Last %> <%= data.Unit %></span><br>
+                    <span class="text-gray-500">Daily Change: <%= data.DailyPercentualChange %>%</span><br>
+                    <span class="text-gray-500">Monthly Change: <%= data.MonthlyPercentualChange %>%</span><br>
+                    <span class="text-gray-500">YTD Change: <%= data.YTDPercentualChange %>%</span><br>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+  
+        </div>
+      </div>
+  
+      <!-- Forecast Content -->
+      <div id="forecast-content" class="hidden">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8">
+  
+          <!-- Left Card for Country 1 (Forecast Data) -->
+          <div id="country1-forecast" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-blue-900 mb-4">Forecasts for <%= country1 %></h3>
+            <div id="forecast-data">
+              <ul class="space-y-4">
+                <% if (forecastData && forecastData[country1] && forecastData[country1].Symbol) { %>
+                  <li class="text-lg text-gray-500">Symbol: <%= forecastData[country1].Symbol %></li>
+                  <li class="text-lg text-gray-500">Type: <%= forecastData[country1].Type %></li>
+                  <li class="text-lg text-gray-500">Last: <%= forecastData[country1].Last %></li>
+  
+                  <% if (forecastData[country1].Forecast2 && forecastData[country1].ForecastDate2) { %>
+                    <li class="text-lg text-gray-500">
+                      Forecast 2: <%= forecastData[country1].Forecast2 %> (Date: <%= forecastData[country1].ForecastDate2 %>)
+                    </li>
+                  <% } %>
+  
+                  <% if (forecastData[country1].Forecast3 && forecastData[country1].ForecastDate3) { %>
+                    <li class="text-lg text-gray-500">
+                      Forecast 3: <%= forecastData[country1].Forecast3 %> (Date: <%= forecastData[country1].ForecastDate3 %>)
+                    </li>
+                  <% } %>
+  
+                  <% if (forecastData[country1].Forecast4 && forecastData[country1].ForecastDate4) { %>
+                    <li class="text-lg text-gray-500">
+                      Forecast 4: <%= forecastData[country1].Forecast4 %> (Date: <%= forecastData[country1].ForecastDate4 %>)
+                    </li>
+                  <% } %>
+                <% } else { %>
+                  <li class="text-lg text-gray-500">No forecast data available - API error probably.</li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+  
+          <!-- Right Card for Country 2 (Forecast Data) -->
+          <div id="country2-forecast" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-2xl font-semibold text-blue-900 mb-4">Forecasts for <%= country2 %></h3>
+            <div id="forecast-data">
+              <ul class="space-y-4">
+                <% if (forecastData && forecastData[country2] && forecastData[country2].Symbol) { %>
+                  <li class="text-lg text-gray-500">Symbol: <%= forecastData[country2].Symbol %></li>
+                  <li class="text-lg text-gray-500">Type: <%= forecastData[country2].Type %></li>
+                  <li class="text-lg text-gray-500">Last: <%= forecastData[country2].Last %></li>
+  
+                  <% if (forecastData[country2].Forecast2 && forecastData[country2].ForecastDate2) { %>
+                    <li class="text-lg text-gray-500">
+                      Forecast 2: <%= forecastData[country2].Forecast2 %> (Date: <%= forecastData[country2].ForecastDate2 %>)
+                    </li>
+                  <% } else { %>
+                    <li class="text-lg text-gray-500">No Forecast 2 data available for <%= country2 %>.</li>
+                  <% } %>
+  
+                  <% if (forecastData[country2].Forecast3 && forecastData[country2].ForecastDate3) { %>
+                    <li class="text-lg text-gray-500">
+                      Forecast 3: <%= forecastData[country2].Forecast3 %> (Date: <%= forecastData[country2].ForecastDate3 %>)
+                    </li>
+                  <% } else { %>
+                    <li class="text-lg text-gray-500">No Forecast 3 data available for <%= country2 %>.</li>
+                  <% } %>
+  
+                  <% if (forecastData[country2].Forecast4 && forecastData[country2].ForecastDate4) { %>
+                    <li class="text-lg text-gray-500">
+                      Forecast 4: <%= forecastData[country2].Forecast4 %> (Date: <%= forecastData[country2].ForecastDate4 %>)
+                    </li>
+                  <% } else { %>
+                    <li class="text-lg text-gray-500">No Forecast 4 data available for <%= country2 %>.</li>
+                  <% } %>
+                <% } else { %>
+                  <li class="text-lg text-gray-500">No forecast data available for <%= country2 %> - API error probably.</li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+  
+      <!-- Financials Content -->
+      <div id="financials-content" class="hidden">
+        Financials Data
+      </div>
+  
+    </div>
+  
+    <!-- Instructions (before selection) -->
+    <div id="instructions" class="max-w-7xl mx-auto px-6 text-center">
+      <p class="text-xl text-gray-600">Please select two countries to begin the comparison.</p>
+    </div>
+  
+  </main>
+  
+  <!-- Include the Footer -->
+  <%- include('../components/footer') %>
+
+  <script>
+    // Tab Switching Logic
+    function switchTab(event, tabId) {
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('[id$="-content"]');
+      
+      console.log(`Switching to tab: ${tabId}`);
+  
+      // Remove active class from all tabs
+      tabButtons.forEach(tab => {
+        tab.classList.remove('bg-gray-900', 'text-white');
+        tab.classList.add('text-gray-700');
+      });
+  
+      // Add active class to the clicked tab
+      event.target.classList.add('bg-gray-900', 'text-white');
+      event.target.classList.remove('text-gray-700');
+  
+      // Hide all tab contents
+      tabContents.forEach(content => content.classList.add('hidden'));
+  
+      // Show the selected tab content
+      const activeTabContent = document.getElementById(tabId + '-content');
+      activeTabContent.classList.remove('hidden');
+  
+      // Load the corresponding content for the selected tab
+      loadTabData(tabId);
+    }
+  
+    function loadTabData(tabId) {
+      const country1 = document.getElementById('country1').value;
+      const country2 = document.getElementById('country2').value;
+  
+      if (country1 && country2) {
+        console.log(`Loading data for tab: ${tabId} for countries: ${country1} and ${country2}`);
+  
+        // Load the content based on the selected tab
+        switch (tabId) {
+          case 'calendar':
+            loadEconomicCalendar(country1, country2);
+            break;
+          case 'market':
+            loadMarketData(country1, country2);
+            break;
+          case 'forecast':
+            loadForecastData(country1, country2);
+            break;
+          case 'financials':
+            loadFinancialsData(country1, country2);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  
+    function loadEconomicCalendar(country1, country2) {
+      console.log(`Loading economic calendar data for: ${country1}, ${country2}`);
+      document.getElementById('country1-content').innerHTML = `Economic Calendar for ${country1}: Major events for ${country1}.`;
+      document.getElementById('country2-content').innerHTML = `Economic Calendar for ${country2}: Major events for ${country2}.`;
+    }
+  
+    function loadMarketData(country1, country2) {
+      console.log(`Loading market data for: ${country1}, ${country2}`);
+      document.getElementById('country1-content').innerHTML = `Market Data for ${country1}`;
+      document.getElementById('country2-content').innerHTML = `Market Data for ${country2}`;
+    }
+  
+    function loadForecastData(country1, country2) {
+      console.log(`Loading forecast data for: ${country1}, ${country2}`);
+      document.getElementById('country1-content').innerHTML = `Forecast Data for ${country1}`;
+      document.getElementById('country2-content').innerHTML = `Forecast Data for ${country2}`;
+    }
+  
+    function loadFinancialsData(country1, country2) {
+      console.log(`Loading financials data for: ${country1}, ${country2}`);
+      document.getElementById('country1-content').innerHTML = `Financials Data for ${country1}`;
+      document.getElementById('country2-content').innerHTML = `Financials Data for ${country2}`;
+    }
+  
+    function updateUrl() {
+      const country1 = document.getElementById('country1').value;
+      const country2 = document.getElementById('country2').value;
+  
+      if (country1 && country2) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('country1', country1);
+        url.searchParams.set('country2', country2);
+        window.history.pushState({}, '', url);
+        document.getElementById('content').classList.remove('hidden');
+        document.getElementById('instructions').classList.add('hidden');
+        updateCountryNames(country1, country2);
+        updateComparisonTable(country1, country2);
+  
+        // Switch to the 'Market' tab after both countries are selected
+        const marketTabButton = document.getElementById('market-tab');
+        switchTab({ target: marketTabButton }, 'market');
+      } else {
+        document.getElementById('content').classList.add('hidden');
+        document.getElementById('instructions').classList.remove('hidden');
+      }
+    }
+  
+    function updateCountryNames(country1, country2) {
+      const country1Header = document.querySelectorAll('h3')[0];
+      const country2Header = document.querySelectorAll('h3')[1];
+  
+      if (country1Header && country2Header) {
+        country1Header.textContent = `${country1} Data`;
+        country2Header.textContent = `${country2} Data`;
+      }
+    }
+  
+    function updateComparisonTable(country1, country2) {
+      console.log(`Updating comparison table with data for: ${country1}, ${country2}`);
+      document.getElementById('country1-gdp').textContent = `GDP of ${country1}`;
+      document.getElementById('country2-gdp').textContent = `GDP of ${country2}`;
+  
+      document.getElementById('country1-inflation').textContent = `Inflation in ${country1}`;
+      document.getElementById('country2-inflation').textContent = `Inflation in ${country2}`;
+  
+      document.getElementById('country1-unemployment').textContent = `Unemployment in ${country1}`;
+      document.getElementById('country2-unemployment').textContent = `Unemployment in ${country2}`;
+    }
+  
+    // Initialize the page state
+    function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const country1 = urlParams.get('country1');
+      const country2 = urlParams.get('country2');
+  
+      if (country1 && country2) {
+        document.getElementById('country1').value = country1;
+        document.getElementById('country2').value = country2;
+        updateCountryNames(country1, country2);
+        document.getElementById('content').classList.remove('hidden');
+        document.getElementById('instructions').classList.add('hidden');
+        updateComparisonTable(country1, country2);
+  
+        // Auto-switch to the 'Market' tab if both countries are selected
+        const marketTabButton = document.getElementById('market-tab');
+        switchTab({ target: marketTabButton }, 'market');
+      } else {
+        document.getElementById('content').classList.add('hidden');
+        document.getElementById('instructions').classList.remove('hidden');
+      }
+    }
+  
+    // Initialize on page load
+    init();
+  </script>
+
+</body>
+
+</html>

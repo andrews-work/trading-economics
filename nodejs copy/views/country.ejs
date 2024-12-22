@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= country %> Economic Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <header>
+        <nav class="bg-blue-900 p-4">
+            <ul class="flex justify-center space-x-6">
+                <li><a href="/" class="text-white hover:text-blue-200">Home</a></li>
+                <li><a href="/mexico" class="text-white hover:text-blue-200">Mexico</a></li>
+                <li><a href="/thailand" class="text-white hover:text-blue-200">Thailand</a></li>
+                <li><a href="/new-zealand" class="text-white hover:text-blue-200">New Zealand</a></li>
+                <li><a href="/sweden" class="text-white hover:text-blue-200">Sweden</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-[85vh] flex flex-col items-center justify-start pt-24">
+        <div class="w-full max-w-screen-xl px-6"> <!-- Centering content inside a max-width container -->
+            <h1 class="text-4xl font-semibold text-center text-blue-900"><%= country %> Economic Data</h1>
+            <p class="mt-4 text-lg text-center">This page displays economic data for <%= country %>, including recent reports and forecasts.</p>
+
+            <!-- Calendar Data Table (vertical layout) -->
+            <% if (data.length > 0) { %>
+                <!-- This container will center all the grid items -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 justify-center"> <!-- Grid with centered items -->
+                    <% data.forEach(event => { %>
+                        <div class="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto"> <!-- Individual card, centered in the grid -->
+                            <h3 class="text-2xl font-semibold text-blue-900"><%= event.Event %></h3>
+                            <dl class="space-y-6 mt-6 text-lg"> <!-- Increased space between rows -->
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Date</dt>
+                                    <dd><%= new Date(event.Date).toLocaleString() %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Category</dt>
+                                    <dd><%= event.Category %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Reference</dt>
+                                    <dd><%= event.Reference %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Forecast</dt>
+                                    <dd><%= event.Forecast %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Previous</dt>
+                                    <dd><%= event.Previous %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Actual</dt>
+                                    <dd><%= event.Actual %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">TEForecast</dt>
+                                    <dd><%= event.TEForecast %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Source</dt>
+                                    <dd><%= event.Source %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">URL</dt>
+                                    <dd>
+                                        <% if (event.SourceURL) { %>
+                                            <a href="<%= event.SourceURL %>" class="text-blue-500" target="_blank">Source Link</a>
+                                        <% } else { %>
+                                            N/A
+                                        <% } %>
+                                    </dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Importance</dt>
+                                    <dd><%= event.Importance %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Date Span</dt>
+                                    <dd><%= event.DateSpan %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Last Update</dt>
+                                    <dd><%= new Date(event.LastUpdate).toLocaleString() %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Revised</dt>
+                                    <dd><%= event.Revised %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Currency</dt>
+                                    <dd><%= event.Currency %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Unit</dt>
+                                    <dd><%= event.Unit %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Ticker</dt>
+                                    <dd><%= event.Ticker %></dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="font-medium">Symbol</dt>
+                                    <dd><%= event.Symbol %></dd>
+                                </div>
+                            </dl>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="text-center mt-6">
+                    <p class="text-lg">No data available</p>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white text-center py-4 mt-8">
+        <p>&copy; 2024 Trading Economics. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

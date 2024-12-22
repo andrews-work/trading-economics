@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Economics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <%- include('../components/header') %>
+
+    <!-- Main Content -->
+    <main class="flex items-center justify-center min-h-[86vh] py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <!-- Welcome Title -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900">
+                    Welcome to Trading Economics
+                </h1>
+                <p class="text-xl text-gray-700 mt-4">Explore economic data of various countries</p>
+            </div>
+
+            <!-- Country Data Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <% if (countries && countries.length > 0) { %>
+                    <% countries.forEach(country => { %>
+                        <!-- Card for each Country -->
+                        <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                            <!-- Header: Country Title -->
+                            <div class="mb-6">
+                                <h2 class="text-3xl font-semibold text-center text-blue-900"><%= country %></h2>
+                            </div>
+                            <!-- Body: Display Stats -->
+                            <div class="mb-6">
+                                <p class="text-center text-xl text-gray-700 mb-4">Economic Data Summary</p>
+                                <div class="flex flex-col items-center space-y-4">
+                                    <div class="bg-blue-100 p-6 w-full rounded-lg">
+                                        <p class="text-gray-700 text-center text-sm">GDP: 
+                                            <% 
+                                                // Find the corresponding GDP data for this country
+                                                const countryGDP = gdpData.find(item => item.country.toLowerCase() === country.toLowerCase());
+                                            %>
+                                            <%= countryGDP ? countryGDP.latestValue : 'Data not available' %> USD Billion
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Inflation -->
+                                    <div class="bg-blue-100 p-6 w-full rounded-lg">
+                                        <p class="text-gray-700 text-center text-sm">Inflation:
+                                            <% 
+                                                const countryInflation = calendarData.find(item => item.country === country && item.eventType === 'Inflation');
+                                            %>
+                                            
+                                            <% if (countryInflation) { %>
+                                                <%= countryInflation.previous %> 
+                                            <% } else { %>
+                                                No inflation data available.
+                                            <% } %>
+                                        </p>
+                                    </div>
+
+                                    <div class="bg-blue-100 p-6 w-full rounded-lg">
+                                        <p class="text-gray-700 text-center">Unemployment:</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Footer: View More Button -->
+                            <div class="text-center">
+                                <a href="/country/<%= country %>" class="bg-blue-900 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition duration-300">
+                                    View More Data
+                                </a>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No data available to display.</p>
+                <% } %>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('../components/footer') %>
+
+</body>
+
+</html>
