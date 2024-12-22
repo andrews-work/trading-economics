@@ -23,18 +23,18 @@
 
     <!-- Main Content -->
     <main class="min-h-[85vh] flex flex-col items-center justify-start pt-24">
-        <div class="w-full max-w-screen-xl px-6"> <!-- Centering content inside a max-width container -->
+        <div class="w-full max-w-screen-xl px-6">
             <h1 class="text-4xl font-semibold text-center text-blue-900"><%= country %> Economic Data</h1>
             <p class="mt-4 text-lg text-center">This page displays economic data for <%= country %>, including recent reports and forecasts.</p>
 
             <!-- Calendar Data Table (vertical layout) -->
             <% if (data.length > 0) { %>
                 <!-- This container will center all the grid items -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 justify-center"> <!-- Grid with centered items -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 justify-center">
                     <% data.forEach(event => { %>
-                        <div class="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto"> <!-- Individual card, centered in the grid -->
+                        <div class="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
                             <h3 class="text-2xl font-semibold text-blue-900"><%= event.Event %></h3>
-                            <dl class="space-y-6 mt-6 text-lg"> <!-- Increased space between rows -->
+                            <dl class="space-y-6 mt-6 text-lg">
                                 <div class="flex justify-between">
                                     <dt class="font-medium">Date</dt>
                                     <dd><%= new Date(event.Date).toLocaleString() %></dd>
