@@ -1,8 +1,3 @@
-## node js copy
-
-- day 1: this is what i did, my first time using node in about a year, 
-
-
 
 ### Introduction
 
@@ -43,8 +38,4 @@ https://hub.docker.com/u/tradingeconomics
 **Learn More**
 
 https://tradingeconomics.com/api/
-
-
-
-
 

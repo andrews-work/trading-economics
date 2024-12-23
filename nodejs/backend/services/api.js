@@ -8,8 +8,7 @@ async function getCountryNames() {
     try {
         const data = await te.getMarketSnap(country = ['mexico', 'sweden', 'thailand', 'new zealand']);
         const countries = data.map(item => item.Country);
-        const filteredCountries = countries.filter(country => 
-            !country.toLowerCase().includes('free accounts') && 
+        const filteredCountries = countries.filter(country =>
             typeof country === 'string' && country.trim() !== ''
         );
         const uniqueCountries = [...new Set(filteredCountries)];
@@ -30,6 +29,7 @@ async function getCountryData(countryName) {
         throw error;
     }
 }
+
 
 // gdp 
 async function getGDPData() {
